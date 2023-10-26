@@ -1,44 +1,55 @@
-#include <stdio.h>
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations";
+#include <iostream>
+#include <fstream>
+// Install the freeglut3-dev library using the appropriate method for your system.
+
 #include <GL/glut.h>
 #include <math.h>
 
 #define TRUE 1
 #define FALSE 0
+
 /* Dimensions of texture image. */
 #define IMAGE_WIDTH 64
 #define IMAGE_HEIGHT 64
+
 /* Step to be taken for each rotation. */
 #define ANGLE_STEP 10
+
 /* Magic numbers for relationship b/w cylinder head and crankshaft. */
 #define MAGNITUDE 120
 #define PHASE 270.112
 #define FREQ_DIV 58
 #define ARC_LENGHT 2.7
 #define ARC_RADIUS 0.15
+
 /* Rotation angles */
 GLdouble view_h = 270, view_v = 0, head_angle = 0;
 GLint crank_angle = 0;
+
 /* Crank rotation step. */
 GLdouble crank_step = 5;
+
 /* Toggles */
 GLshort shaded = TRUE, anim = FALSE;
 GLshort texture = FALSE, transparent = FALSE;
 GLshort light1 = TRUE, light2 = FALSE;
+
 /* Storage for the angle look up table and the texture map */
 GLdouble head_look_up_table[361];
 GLubyte image[IMAGE_WIDTH][IMAGE_HEIGHT][3];
+
 /* Indentifiers for each Display list */
 GLint list_piston_shaded = 1;
 GLint list_piston_texture = 2;
 GLint list_flywheel_shaded = 4;
 GLint list_flywheel_texture = 8;
+
 /* Variable used in the creaton of glu objects */
 GLUquadricObj *obj;
-/* Draws a box by scaling a glut cube of size 1. Also checks the
-shaded
- toggle to see which rendering style to use. NB Texture doesn't work
- correctly due to the cube being scaled. */
+
+/* Draws a box by scaling a glut cube of size 1. Also checks the shaded
+   toggle to see which rendering style to use. NB Texture doesn't work
+   correctly due to the cube being scaled. */
 void myBox(GLdouble x, GLdouble y, GLdouble z)
 {
     glPushMatrix();
@@ -49,9 +60,9 @@ void myBox(GLdouble x, GLdouble y, GLdouble z)
         glutWireCube(1);
     glPopMatrix();
 }
-/* Draws a cylinder using glu function, drawing flat disc's at each
-end,
- to give the appearence of it being solid. */
+
+/* Draws a cylinder using glu function, drawing flat disc's at each end,
+   to give the appearence of it being solid. */
 void myCylinder(GLUquadricObj *object, GLdouble outerRadius,
                 GLdouble innerRadius, GLdouble lenght)
 {
@@ -61,20 +72,125 @@ void myCylinder(GLUquadricObj *object, GLdouble outerRadius,
     glRotatef(180, 0.0, 1.0, 0.0);
     gluDisk(object, innerRadius, outerRadius, 20, 1);
     glPopMatrix();
+
     glTranslatef(0.0, 0.0, lenght);
     gluDisk(object, innerRadius, outerRadius, 20, 1);
     glPopMatrix();
 }
-/* Draws a piston. */
+
+/* Draws a piston.  */
 void draw_piston(void)
 {
     glPushMatrix();
-    glColor4f(0.3, 0.6, 0.9, 1.0);
+    glColor4f(0.9, 0.6, 0.9, 1.5);
+
     glPushMatrix();
     glRotatef(90, 0.0, 1.0, 0.0);
     glTranslatef(0.0, 0.0, -0.07);
     myCylinder(obj, 0.125, 0.06, 0.12);
     glPopMatrix();
+
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    glTranslatef(0.0, 0.0, 0.05);
+    myCylinder(obj, 0.06, 0.0, 0.6);
+}
+#include <GL/freeglut.h>
+```
+
+    This line includes the header file `GL /
+    freeglut.h`,
+    which is a wrapper around `GL / glut.h` and provides some additional functionality.
+
+                                    Here's the updated code:
+#include <GL/glut.h>
+#include <math.h>
+
+#define TRUE 1
+#define FALSE 0
+
+/* Dimensions of texture image. */
+#define IMAGE_WIDTH 64
+#define IMAGE_HEIGHT 64
+
+/* Step to be taken for each rotation. */
+#define ANGLE_STEP 10
+
+/* Magic numbers for relationship b/w cylinder head and crankshaft. */
+#define MAGNITUDE 120
+#define PHASE 270.112
+#define FREQ_DIV 58
+#define ARC_LENGHT 2.7
+#define ARC_RADIUS 0.15
+
+                                    /* Rotation angles */
+                                    GLdouble view_h = 270,
+                                             view_v = 0, head_angle = 0;
+GLint crank_angle = 0;
+
+/* Crank rotation step. */
+GLdouble crank_step = 5;
+
+/* Toggles */
+GLshort shaded = TRUE, anim = FALSE;
+GLshort texture = FALSE, transparent = FALSE;
+GLshort light1 = TRUE, light2 = FALSE;
+
+/* Storage for the angle look up table and the texture map */
+GLdouble head_look_up_table[361];
+GLubyte image[IMAGE_WIDTH][IMAGE_HEIGHT][3];
+
+/* Indentifiers for each Display list */
+GLint list_piston_shaded = 1;
+GLint list_piston_texture = 2;
+GLint list_flywheel_shaded = 4;
+GLint list_flywheel_texture = 8;
+
+/* Variable used in the creaton of glu objects */
+GLUquadricObj *obj;
+
+/* Draws a box by scaling a glut cube of size 1. Also checks the shaded
+   toggle to see which rendering style to use. NB Texture doesn't work
+   correctly due to the cube being scaled. */
+void myBox(GLdouble x, GLdouble y, GLdouble z)
+{
+    glPushMatrix();
+    glScalef(x, y, z);
+    if (shaded)
+        glutSolidCube(1);
+    else
+        glutWireCube(1);
+    glPopMatrix();
+}
+
+/* Draws a cylinder using glu function, drawing flat disc's at each end,
+   to give the appearence of it being solid. */
+void myCylinder(GLUquadricObj *object, GLdouble outerRadius,
+                GLdouble innerRadius, GLdouble lenght)
+{
+    glPushMatrix();
+    gluCylinder(object, outerRadius, outerRadius, lenght, 20, 1);
+    glPushMatrix();
+    glRotatef(180, 0.0, 1.0, 0.0);
+    gluDisk(object, innerRadius, outerRadius, 20, 1);
+    glPopMatrix();
+
+    glTranslatef(0.0, 0.0, lenght);
+    gluDisk(object, innerRadius, outerRadius, 20, 1);
+    glPopMatrix();
+}
+
+/* Draws a piston.  */
+void draw_piston(void)
+{
+    glPushMatrix();
+    glColor4f(0.9, 0.6, 0.9, 1.5);
+
+    glPushMatrix();
+    glRotatef(90, 0.0, 1.0, 0.0);
+    glTranslatef(0.0, 0.0, -0.07);
+    myCylinder(obj, 0.125, 0.06, 0.12);
+    glPopMatrix();
+
     glRotatef(-90, 1.0, 0.0, 0.0);
     glTranslatef(0.0, 0.0, 0.05);
     myCylinder(obj, 0.06, 0.0, 0.6);
@@ -82,25 +198,27 @@ void draw_piston(void)
     myCylinder(obj, 0.2, 0.0, 0.5);
     glPopMatrix();
 }
+
 /* Draws the engine pole and the pivot pole for the cylinder head. */
 void draw_engine_pole(void)
 {
     glPushMatrix();
     glColor4f(0.9, 0.9, 0.9, 1.0);
     myBox(0.5, 3.0, 0.5);
-    glColor3f(0.5, 0.1, 0.5);
+
+    glColor3f(1.5, 2.1, 3.5);
     glRotatef(90, 0.0, 1.0, 0.0);
     glTranslatef(0.0, 0.9, -0.4);
     myCylinder(obj, 0.1, 0.0, 2);
     glPopMatrix();
 }
-/* Draws the cylinder head at the appropreate angle, doing the
-necesary
- translations for the rotation. */
+
+/* Draws the cylinder head at the appropreate angle, doing the necesary
+   translations for the rotation. */
 void draw_cylinder_head(void)
 {
     glPushMatrix();
-    glColor4f(0.5, 1.0, 0.5, 0.1);
+    glColor4f(3.5, 1.0, 0.5, 0.1);
     glRotatef(90, 1.0, 0.0, 0.0);
     glTranslatef(0, 0.0, 0.4);
     glRotatef(head_angle, 1, 0, 0);
@@ -110,7 +228,8 @@ void draw_cylinder_head(void)
     gluDisk(obj, 0, 0.23, 20, 1);
     glPopMatrix();
 }
-/* Draws the flywheel. */
+
+/* Draws the flywheel.  */
 void draw_flywheel(void)
 {
     glPushMatrix();
@@ -119,20 +238,21 @@ void draw_flywheel(void)
     myCylinder(obj, 0.625, 0.08, 0.5);
     glPopMatrix();
 }
-/* Draws the crank bell, and the pivot pin for the piston. Also calls
-the
- appropreate display list of a piston doing the nesacary rotations
-before
- hand. */
+
+/* Draws the crank bell, and the pivot pin for the piston. Also calls the
+   appropreate display list of a piston doing the nesacary rotations before
+   hand.  */
 void draw_crankbell(void)
 {
     glPushMatrix();
-    glColor4f(1.0, 0.5, 0.5, 1.0);
+    glColor4f(1.0, 2.5, 3.5, 1.0);
     glRotatef(90, 0.0, 1.0, 0.0);
     myCylinder(obj, 0.3, 0.08, 0.12);
+
     glColor4f(0.5, 0.1, 0.5, 1.0);
     glTranslatef(0.0, 0.2, 0.0);
     myCylinder(obj, 0.06, 0.0, 0.34);
+
     glTranslatef(0.0, 0.0, 0.22);
     glRotatef(90, 0.0, 1.0, 0.0);
     glRotatef(crank_angle - head_angle, 1.0, 0.0, 0.0);
@@ -147,22 +267,25 @@ void draw_crankbell(void)
         draw_piston();
     glPopMatrix();
 }
-/* Draws the complete crank. Piston also gets drawn through the crank
-bell
- function. */
+
+/* Draws the complete crank. Piston also gets drawn through the crank bell
+   function. */
 void draw_crank(void)
 {
     glPushMatrix();
     glRotatef(crank_angle, 1.0, 0.0, 0.0);
+
     glPushMatrix();
     glRotatef(90, 0.0, 1.0, 0.0);
     glTranslatef(0.0, 0.0, -1.0);
     myCylinder(obj, 0.08, 0.0, 1.4);
     glPopMatrix();
+
     glPushMatrix();
     glTranslatef(0.28, 0.0, 0.0);
     draw_crankbell();
     glPopMatrix();
+
     glPushMatrix();
     glTranslatef(-0.77, 0.0, 0.0);
     if (shaded)
@@ -177,17 +300,17 @@ void draw_crank(void)
     glPopMatrix();
     glPopMatrix();
 }
-/* Main display routine. Clears the drawing buffer and if transparency
-is
- set, displays the model twice, 1st time accepting those fragments
-with
- a ALPHA value of 1 only, then with DEPTH_BUFFER writing disabled
-for
- those with other values. */
+
+/* Main display routine. Clears the drawing buffer and if transparency is
+   set, displays the model twice, 1st time accepting those fragments with
+   a ALPHA value of 1 only, then with DEPTH_BUFFER writing disabled for
+   those with other values. */
 void display(void)
 {
     int pass;
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glPushMatrix();
     if (transparent)
     {
@@ -199,9 +322,11 @@ void display(void)
         glDisable(GL_ALPHA_TEST);
         pass = 0;
     }
+
     /* Rotate the whole model */
     glRotatef(view_h, 0, 1, 0);
     glRotatef(view_v, 1, 0, 0);
+
     do
     {
         if (pass == 2)
@@ -217,10 +342,12 @@ void display(void)
             pass--;
         }
         draw_engine_pole();
+
         glPushMatrix();
         glTranslatef(0.5, 1.4, 0.0);
         draw_cylinder_head();
         glPopMatrix();
+
         glPushMatrix();
         glTranslatef(0.0, -0.8, 0.0);
         draw_crank();
@@ -230,10 +357,10 @@ void display(void)
     glutSwapBuffers();
     glPopMatrix();
 }
-/* Called when the window is idle. When called increments the crank
-angle
- by ANGLE_STEP, updates the head angle and notifies the system that
- the screen needs to be updated. */
+
+/* Called when the window is idle. When called increments the crank angle
+   by ANGLE_STEP, updates the head angle and notifies the system that
+   the screen needs to be updated. */
 void animation(void)
 {
     if ((crank_angle += crank_step) >= 360)
@@ -241,9 +368,9 @@ void animation(void)
     head_angle = head_look_up_table[crank_angle];
     glutPostRedisplay();
 }
-/* Called when a key is pressed. Checks if it reconises the key and if
-so
- acts on it, updateing the screen. */
+
+/* Called when a key is pressed. Checks if it reconises the key and if so
+   acts on it, updateing the screen. */
 /* ARGSUSED1 */
 void keyboard(unsigned char key, int x, int y)
 {
@@ -299,6 +426,7 @@ void keyboard(unsigned char key, int x, int y)
             transparent = FALSE;
         }
         break;
+
     case 'a':
         if ((crank_angle += crank_step) >= 360)
             crank_angle = 0;
@@ -337,10 +465,7 @@ void keyboard(unsigned char key, int x, int y)
         if ((view_h -= ANGLE_STEP) <= 0)
             view_h = 360;
         break;
-    case '6':
-        if ((view_h += ANGLE_STEP) >= 360)
-            view_h = 0;
-        break;
+
     case '8':
         if ((view_v += ANGLE_STEP) >= 360)
             view_v = 0;
@@ -374,6 +499,7 @@ void keyboard(unsigned char key, int x, int y)
     }
     glutPostRedisplay();
 }
+
 /* ARGSUSED1 */
 void special(int key, int x, int y)
 {
@@ -400,12 +526,13 @@ void special(int key, int x, int y)
     }
     glutPostRedisplay();
 }
-/* Called when a menu option has been selected. Translates the menu
-item
- identifier into a keystroke, then call's the keyboard function. */
+
+/* Called when a menu option has been selected. Translates the menu item
+   identifier into a keystroke, then call's the keyboard function. */
 void menu(int val)
 {
     unsigned char key;
+
     switch (val)
     {
     case 1:
@@ -423,9 +550,7 @@ void menu(int val)
     case 5:
         key = '0';
         break;
-    case 6:
-        key = '1';
-        break;
+
     case 7:
         key = '+';
         break;
@@ -437,42 +562,47 @@ void menu(int val)
     }
     keyboard(key, 0, 0);
 }
+
 /* Initialises the menu of toggles. */
 void create_menu(void)
 {
     glutCreateMenu(menu);
+    glutAttachMenu(GLUT_LEFT_BUTTON);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
     glutAddMenuEntry("Shaded", 1);
     glutAddMenuEntry("Animation", 2);
     glutAddMenuEntry("Texture", 3);
     glutAddMenuEntry("Transparency", 4);
-    glutAddMenuEntry("Right Light (0)", 5);
-    glutAddMenuEntry("Left Light (1)", 6);
+    glutAddMenuEntry("Light On/Off", 5);
+
     glutAddMenuEntry("Speed UP", 7);
     glutAddMenuEntry("Slow Down", 8);
 }
-/* Makes a simple check pattern image. (Copied from the redbook
-example
- "checker.c".) */
+
+/* Makes a simple check pattern image. (Copied from the redbook example
+   "checker.c".) */
 void make_image(void)
 {
     int i, j, c;
+
     for (i = 0; i < IMAGE_WIDTH; i++)
     {
         for (j = 0; j < IMAGE_HEIGHT; j++)
         {
-            c = (((i & 0x8) == 0) ^ ((j & 0x8) == 0)) * 255;
+            c = ((((i & 0x8) == 0) ^ ((j & 0x8)) == 0)) * 255;
             image[i][j][0] = (GLubyte)c;
             image[i][j][1] = (GLubyte)c;
             image[i][j][2] = (GLubyte)c;
         }
     }
 }
+
 /* Makes the head look up table for all possible crank angles. */
 void make_table(void)
 {
     GLint i;
     GLdouble k;
+
     for (i = 0, k = 0.0; i < 360; i++, k++)
     {
         head_look_up_table[i] =
@@ -481,18 +611,22 @@ void make_table(void)
                             ((ARC_LENGHT - ARC_RADIUS * cos(PHASE - k / FREQ_DIV))));
     }
 }
+
 /* Initialises texturing, lighting, display lists, and everything else
- associated with the model. */
+   associated with the model. */
 void myinit(void)
 {
     GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat mat_shininess[] = {50.0};
     GLfloat light_position1[] = {1.0, 1.0, 1.0, 0.0};
     GLfloat light_position2[] = {-1.0, 1.0, 1.0, 0.0};
+
     glClearColor(0.0, 0.0, 0.0, 0.0);
+
     obj = gluNewQuadric();
     make_table();
     make_image();
+
     /* Set up Texturing */
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, IMAGE_WIDTH,
@@ -503,21 +637,25 @@ void myinit(void)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
     /* Set up Lighting */
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position1);
     glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
+
     /* Initial render mode is with full shading and LIGHT 0
-    enabled. */
+       enabled. */
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_ALPHA_TEST);
+
     glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
     glShadeModel(GL_SMOOTH);
+
     /* Initialise display lists */
     glNewList(list_piston_shaded, GL_COMPILE);
     draw_piston();
@@ -525,6 +663,7 @@ void myinit(void)
     glNewList(list_flywheel_shaded, GL_COMPILE);
     draw_flywheel();
     glEndList();
+
     gluQuadricTexture(obj, GL_TRUE);
     glNewList(list_piston_texture, GL_COMPILE);
     draw_piston();
@@ -534,7 +673,8 @@ void myinit(void)
     glEndList();
     gluQuadricTexture(obj, GL_FALSE);
 }
-/* Called when the model's window has been reshaped. */
+
+/* Called when the model's window has been reshaped.  */
 void myReshape(int w, int h)
 {
     glViewport(0, 0, w, h);
@@ -543,34 +683,102 @@ void myReshape(int w, int h)
     gluPerspective(65.0, (GLfloat)w / (GLfloat)h, 1.0, 20.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslatef(0.0, 0.0, -5.0); /* viewing transform */
+    glTranslatef(0.0, 0.0, -5.0); /* viewing transform  */
     glScalef(1.5, 1.5, 1.5);
 }
+
+void DrawText(const char *text, int length, int x, int y)
+{
+    glMatrixMode(GL_PROJECTION);
+    double *matrix = new double[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, matrix);
+    glLoadIdentity();
+    glOrtho(0, 800, 0, 600, -5, 5);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glPushMatrix();
+    glLoadIdentity();
+    glRasterPos2i(x, y);
+    for (int i = 0; i < length; i++)
+    {
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (int)text[i]);
+    }
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixd(matrix);
+    glMatrixMode(GL_MODELVIEW);
+}
+void display_other()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    gluLookAt(0, 0, -10, 0, 0, 3, 0, 1, 0);
+
+    std::string text1;
+    std::string text2;
+    std::string text3;
+    std::string text4;
+    std::string text5;
+    std::string text6;
+    std::string text7;
+    std::string text8;
+    std::string text9;
+    text1 = "Miniature Reciprocating Steam Engine by Sneha Sarkar 1PE16CS156";
+    text2 = "Keypad Arrow keys rotates object.";
+    text3 = "Rotate crank: 'a' = anti-clock wise 'z' = clock wise";
+    text4 = "Crank Speed : '+' = Speed up by 1   '-' = Slow Down by 1";
+    text5 = "Toggle      : 's' = Shading         't' = Texture";
+    text6 = "            : ' ' = Animation       'o' = Transparency";
+    text7 = "            : '0' = Light On/Off";
+    text8 = " Alternatively a pop up menu with all toggles is attached";
+    text9 = " to the left mouse button.";
+    DrawText(text1.data(), text1.size(), 200, 500);
+    DrawText(text2.data(), text2.size(), 200, 460);
+    DrawText(text3.data(), text3.size(), 200, 420);
+    DrawText(text4.data(), text4.size(), 200, 380);
+    DrawText(text5.data(), text5.size(), 200, 340);
+    DrawText(text6.data(), text6.size(), 200, 310);
+    DrawText(text7.data(), text7.size(), 200, 270);
+    DrawText(text8.data(), text8.size(), 200, 230);
+    DrawText(text9.data(), text9.size(), 200, 190);
+}
+
 /* Main program. An interactive model of a miniture steam engine.
- Sets system in Double Buffered mode and initialises all the callback
- functions. */
+   Sets system in Double Buffered mode and initialises all the call-back
+   functions. */
 int main(int argc, char **argv)
 {
-    puts("Steam Engine\n");
-    puts("Keypad Arrow keys (with NUM_LOCK on) rotates object.");
-    puts("Rotate crank: 'a' = anti-clock wise 'z' = clock wise");
-    puts("Crank Speed : '+' = Speed up by 1 '-' = Slow Down by 1");
-    puts("Toggle : 's' = Shading 't' = Texture");
-    puts(" : ' ' = Animation 'o' = Transparency");
-    puts(" : '0' = Right Light '1' = Left Light");
-    puts(" Alternatively a pop up menu with all toggles is attached");
-    puts(" to the left mouse button.\n");
-    glutInitWindowSize(400, 400);
+    /*
+  puts("Miniature Reciprocating Steam Engine\n");
+
+  puts("Keypad Arrow keys (with NUM_LOCK on) rotates object.");
+  puts("Rotate crank: 'a' = anti-clock wise 'z' = clock wise");
+  puts("Crank Speed : '+' = Speed up by 1   '-' = Slow Down by 1");
+  puts("Toggle      : 's' = Shading         't' = Texture");
+  puts("            : ' ' = Animation       'o' = Transparency");
+  puts("            : '0' = Right Light     '1' = Left Light");
+  puts(" Alternatively a pop up menu with all toggles is attached");
+  puts("   to the left mouse button.\n");
+  */
+
     glutInit(&argc, argv);
+
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("Instructions");
+    glutDisplayFunc(display_other);
+
+    glutInitWindowSize(800, 800);
+
     /* Transperancy won't work properly without GLUT_ALPHA */
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH |
-                        GLUT_MULTISAMPLE);
-    glutCreateWindow("Steam Engine");
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+    glutCreateWindow("Miniature Steam Engine");
+
     glutDisplayFunc(display);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(special);
     create_menu();
+
     myinit();
+
     glutReshapeFunc(myReshape);
     glutMainLoop();
     return 0; /* ANSI C requires main to return int. */
